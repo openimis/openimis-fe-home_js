@@ -7,5 +7,5 @@ const DEFAULT_CONFIG = {
 }
 
 export const HomeModule = (cfg) => {
-  return { ...DEFAULT_CONFIG, ...(cfg && cfg['fe-home'] || {}) };
+  return { ...DEFAULT_CONFIG, ...cfg };
 }
