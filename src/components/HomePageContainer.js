@@ -30,7 +30,6 @@ const HomePageContainer = () => {
     MODULE_NAME,
     modulesManager
   );
-  console.log(formatMessage);
   const showHomeMessage = modulesManager.getConf(
     "fe-home",
     "HomePageContainer.showHomeMessage",
