@@ -14,3 +14,8 @@ It is dedicated to be deployed as a module of [openimis-fe_js](https://github.co
 
 - `home.HomePage.Container`: Use to override the container of the homepage completely (default: display `home.HomePage.Blocks`)
 - `home.HomePage.Blocks`: Blocks displayed on the homepage. The current `user` is passed to each contribution. An example of block can be found on the [Claim management module](https://github.com/openimis/openimis-fe-claim_js)
+
+## Configurations Options
+
+- `HomePageContainer.showHomeMessage`: a boolean configuration flag that determines whether or not a special message will be displayed on the home page. If set to true, the application will fetch and display HTML content based on the URL specified in **HomePageContainer.homeMessageURL**. By default, this is set to false. It means that no additional message will be displayed on the home page.
+- `HomePageContainer.homeMessageURL`: a string configuration that specifies the URL from which to fetch the HTML payload for display on the home page. By default, this is set to an empty string (""), meaning no URL is specified. This URL is used only when **HomePageContainer.showHomeMessage** is set to true.
