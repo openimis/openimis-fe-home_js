@@ -8,8 +8,9 @@ import {
   useUserQuery,
   ProgressOrError,
   useModulesManager,
+  useTranslations,
 } from "@openimis/fe-core";
-import { DEFAULT, MESSAGE_TITLE } from "../constants";
+import { DEFAULT, MODULE_NAME } from "../constants";
 import { useFetchData } from "../hooks/useFetchData";
 
 const useStyles = makeStyles((theme) => ({
@@ -25,6 +26,11 @@ const useStyles = makeStyles((theme) => ({
 
 const HomePageContainer = () => {
   const modulesManager = useModulesManager();
+  const { formatMessage, formatMessageWithValues } = useTranslations(
+    MODULE_NAME,
+    modulesManager
+  );
+  console.log(formatMessage);
   const showHomeMessage = modulesManager.getConf(
     "fe-home",
     "HomePageContainer.showHomeMessage",
@@ -53,14 +59,19 @@ const HomePageContainer = () => {
       <Grid item xs={12}>
         <Box mt={2}>
           <Typography variant="h4">
-            Welcome {user.otherNames} {user.lastName}!
+            {formatMessageWithValues("HomePageContainer.welcomeMessage", {
+              otherNames: user.otherNames,
+              lastName: user.lastName,
+            })}
           </Typography>
         </Box>
       </Grid>
       {showHomeMessage && (
         <Grid item xs={12}>
           <ProgressOrError progress={messageLoading} error={messageError} />
-          <h3 className={classes.messageTitle}> {MESSAGE_TITLE} </h3>
+          <h3 className={classes.messageTitle}>
+            {formatMessage("HomePageContainer.messageTitle")}
+          </h3>
           <p className={classes.messageDate}> {messageData?.date} </p>
           <div dangerouslySetInnerHTML={{ __html: messageData?.notice }} />
         </Grid>

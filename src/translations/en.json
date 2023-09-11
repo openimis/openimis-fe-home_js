@@ -1,0 +1,4 @@
+{
+  "home.HomePageContainer.welcomeMessage": "Welcome {otherNames} {lastName}!",
+  "home.HomePageContainer.messageTitle": "Notice"
+}

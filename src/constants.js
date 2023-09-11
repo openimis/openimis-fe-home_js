@@ -3,4 +3,4 @@ export const DEFAULT = {
   HOME_MESSAGE_URL: "",
 };
 
-export const MESSAGE_TITLE = 'Notice';
+export const MODULE_NAME = "home";
