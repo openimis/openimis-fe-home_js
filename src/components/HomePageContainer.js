@@ -58,7 +58,7 @@ const HomePageContainer = () => {
   const showHealthFacilityMessage = modulesManager.getConf(
     "fe-home",
     "HomePageContainer.showHealthFacilityMessage",
-    true
+    false
   );
 
   const { user } = useUserQuery();
@@ -73,7 +73,7 @@ const HomePageContainer = () => {
     return null;
   }
 
-  const dateToCheck = new Date(userHealthFacility.contractEndDate);
+  const dateToCheck = new Date(userHealthFacility?.contractEndDate ?? null);
   const timeDelta = getTimeDifferenceInDaysFromToday(dateToCheck);
   const getHealthFacilityStatus = (timeDelta) => {
     if (timeDelta > DAYS_HF_STATUS.DAYS_LONG_TIME_ACTIVE) {
