@@ -12,7 +12,7 @@ import {
 } from "@openimis/fe-core";
 import { useDispatch, useSelector } from "react-redux";
 
-import { DEFAULT, MODULE_NAME } from "../constants";
+import { DEFAULT, MODULE_NAME, DAYS_HF_STATUS } from "../constants";
 import { useFetchData } from "../hooks/useFetchData";
 import { getTimeDifferenceInDaysFromToday } from "@openimis/fe-core";
 
@@ -40,11 +40,11 @@ const useStyles = makeStyles((theme) => ({
 
 const HomePageContainer = () => {
   const modulesManager = useModulesManager();
-  const userHealthFacility = useSelector((state) => state?.loc?.userHealthFacilityFullPath);
-  const { formatMessage, formatMessageWithValues, formatDateFromISO } = useTranslations(
-    MODULE_NAME,
-    modulesManager
+  const userHealthFacility = useSelector(
+    (state) => state?.loc?.userHealthFacilityFullPath
   );
+  const { formatMessage, formatMessageWithValues, formatDateFromISO } =
+    useTranslations(MODULE_NAME, modulesManager);
   const showHomeMessage = modulesManager.getConf(
     "fe-home",
     "HomePageContainer.showHomeMessage",
@@ -58,7 +58,7 @@ const HomePageContainer = () => {
   const showHealthFacilityMessage = modulesManager.getConf(
     "fe-home",
     "HomePageContainer.showHealthFacilityMessage",
-    false
+    true
   );
 
   const { user } = useUserQuery();
@@ -73,19 +73,17 @@ const HomePageContainer = () => {
     return null;
   }
 
-  let dateToCheck = new Date(userHealthFacility.contractEndDate);
+  const dateToCheck = new Date(userHealthFacility.contractEndDate);
   const timeDelta = getTimeDifferenceInDaysFromToday(dateToCheck);
   const getHealthFacilityStatus = (timeDelta) => {
-    if(timeDelta>180){
+    if (timeDelta > DAYS_HF_STATUS.DAYS_LONG_TIME_ACTIVE) {
       return classes.healthFacilityLongTimeActive;
-    }
-    else if(timeDelta>30){
+    } else if (timeDelta > DAYS_HF_STATUS.DAYS_MEDIUM_TIME_ACTIVE) {
       return classes.healthFacilityMediumTimeActive;
-    }
-    else{
+    } else {
       return classes.healthFacilityShortTimeActive;
     }
-  }
+  };
 
   return (
     <Grid container className={classes.container} spacing={2}>
@@ -103,8 +101,8 @@ const HomePageContainer = () => {
         <Grid item xs={12}>
           <h2 className={getHealthFacilityStatus(timeDelta)}>
             {formatMessageWithValues("HomePageContainer.healthFacilityStatus", {
-            date: `${formatDateFromISO(dateToCheck)}`,
-            days: `${timeDelta}`,
+              date: `${formatDateFromISO(dateToCheck)}`,
+              days: `${timeDelta}`,
             })}
           </h2>
         </Grid>
