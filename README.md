@@ -19,3 +19,4 @@ It is dedicated to be deployed as a module of [openimis-fe_js](https://github.co
 
 - `HomePageContainer.showHomeMessage`: a boolean configuration flag that determines whether or not a special message will be displayed on the home page. If set to true, the application will fetch and display HTML content based on the URL specified in **HomePageContainer.homeMessageURL**. By default, this is set to false. It means that no additional message will be displayed on the home page.
 - `HomePageContainer.homeMessageURL`: a string configuration that specifies the URL from which to fetch the HTML payload for display on the home page. By default, this is set to an empty string (""), meaning no URL is specified. This URL is used only when **HomePageContainer.showHomeMessage** is set to true.
+- `HomePageContainer.showHealthFacilityMessage`: boolean to show HF status information. It shows days to the end of the contract of a HF assigned to a current user. Default false.

@@ -10,8 +10,11 @@ import {
   useModulesManager,
   useTranslations,
 } from "@openimis/fe-core";
+import { useDispatch, useSelector } from "react-redux";
+
 import { DEFAULT, MODULE_NAME } from "../constants";
 import { useFetchData } from "../hooks/useFetchData";
+import { getTimeDifferenceInDaysFromToday } from "@openimis/fe-core";
 
 const useStyles = makeStyles((theme) => ({
   container: theme.page,
@@ -22,11 +25,23 @@ const useStyles = makeStyles((theme) => ({
   messageDate: {
     textAlign: "center",
   },
+  healthFacilityLongTimeActive: {
+    textAlign: "center",
+  },
+  healthFacilityMediumTimeActive: {
+    textAlign: "center",
+    color: "gray",
+  },
+  healthFacilityShortTimeActive: {
+    textAlign: "center",
+    color: "red",
+  },
 }));
 
 const HomePageContainer = () => {
   const modulesManager = useModulesManager();
-  const { formatMessage, formatMessageWithValues } = useTranslations(
+  const userHealthFacility = useSelector((state) => state?.loc?.userHealthFacilityFullPath);
+  const { formatMessage, formatMessageWithValues, formatDateFromISO } = useTranslations(
     MODULE_NAME,
     modulesManager
   );
@@ -39,6 +54,11 @@ const HomePageContainer = () => {
     "fe-home",
     "HomePageContainer.homeMessageURL",
     DEFAULT.HOME_MESSAGE_URL
+  );
+  const showHealthFacilityMessage = modulesManager.getConf(
+    "fe-home",
+    "HomePageContainer.showHealthFacilityMessage",
+    false
   );
 
   const { user } = useUserQuery();
@@ -53,6 +73,20 @@ const HomePageContainer = () => {
     return null;
   }
 
+  let dateToCheck = new Date(userHealthFacility.contractEndDate);
+  const timeDelta = getTimeDifferenceInDaysFromToday(dateToCheck);
+  const getHealthFacilityStatus = (timeDelta) => {
+    if(timeDelta>180){
+      return classes.healthFacilityLongTimeActive;
+    }
+    else if(timeDelta>30){
+      return classes.healthFacilityMediumTimeActive;
+    }
+    else{
+      return classes.healthFacilityShortTimeActive;
+    }
+  }
+
   return (
     <Grid container className={classes.container} spacing={2}>
       <Grid item xs={12}>
@@ -65,6 +99,16 @@ const HomePageContainer = () => {
           </Typography>
         </Box>
       </Grid>
+      {showHealthFacilityMessage && (
+        <Grid item xs={12}>
+          <h2 className={getHealthFacilityStatus(timeDelta)}>
+            {formatMessageWithValues("HomePageContainer.healthFacilityStatus", {
+            date: `${formatDateFromISO(dateToCheck)}`,
+            days: `${timeDelta}`,
+            })}
+          </h2>
+        </Grid>
+      )}
       {showHomeMessage && (
         <Grid item xs={12}>
           <ProgressOrError progress={messageLoading} error={messageError} />

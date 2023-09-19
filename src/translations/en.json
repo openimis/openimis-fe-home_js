@@ -1,4 +1,5 @@
 {
   "home.HomePageContainer.welcomeMessage": "Welcome {otherNames} {lastName}!",
-  "home.HomePageContainer.messageTitle": "Notice"
+  "home.HomePageContainer.messageTitle": "Notice",
+  "home.HomePageContainer.healthFacilityStatus": "Your Hospital Contract is expiring on {date}: (Remaining days: {days})"
 }
