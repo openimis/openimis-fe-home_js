@@ -58,7 +58,7 @@ const HomePageContainer = () => {
   const showHealthFacilityMessage = modulesManager.getConf(
     "fe-home",
     "HomePageContainer.showHealthFacilityMessage",
-    true
+    false
   );
 
   const { user } = useUserQuery();
