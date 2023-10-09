@@ -1,5 +1,6 @@
 {
   "home.HomePageContainer.welcomeMessage": "Welcome {otherNames} {lastName}!",
   "home.HomePageContainer.messageTitle": "Notice",
-  "home.HomePageContainer.healthFacilityStatus": "Your Hospital Contract is expiring on {date}: (Remaining days: {days})"
+  "home.HomePageContainer.healthFacilityStatus": "Your Hospital Contract is expiring on {date}: (Remaining days: {days})",
+  "home.HomePageContainer.noHealthFacilityAssigned": "User has no Health Facility assigned and there is no information on when the contract will expire."
 }

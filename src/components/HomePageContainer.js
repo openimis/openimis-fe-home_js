@@ -63,7 +63,7 @@ const HomePageContainer = () => {
   const showHealthFacilityMessage = modulesManager.getConf(
     "fe-home",
     "HomePageContainer.showHealthFacilityMessage",
-    false
+    DEFAULT.SHOW_HEALTH_FACILITY_MESSAGE
   );
 
   const { user } = useUserQuery();
@@ -105,10 +105,15 @@ const HomePageContainer = () => {
       {showHealthFacilityMessage && (
         <Grid item xs={12}>
           <h2 className={getHealthFacilityStatus(timeDelta)}>
-            {formatMessageWithValues("HomePageContainer.healthFacilityStatus", {
-              date: `${formatDateFromISO(dateToCheck)}`,
-              days: `${timeDelta}`,
-            })}
+            {userHealthFacility
+              ? formatMessageWithValues(
+                  "HomePageContainer.healthFacilityStatus",
+                  {
+                    date: `${formatDateFromISO(dateToCheck)}`,
+                    days: `${timeDelta}`,
+                  }
+                )
+              : formatMessage("HomePageContainer.noHealthFacilityAssigned")}
           </h2>
         </Grid>
       )}
@@ -119,7 +124,10 @@ const HomePageContainer = () => {
             {formatMessage("HomePageContainer.messageTitle")}
           </h3>
           <p className={classes.messageDate}> {messageData?.date} </p>
-          <div className={classes.messageNotice} dangerouslySetInnerHTML={{ __html: messageData?.notice }} />
+          <div
+            className={classes.messageNotice}
+            dangerouslySetInnerHTML={{ __html: messageData?.notice }}
+          />
         </Grid>
       )}
       <Contributions contributionKey="home.HomePage.Blocks" user={user} />
