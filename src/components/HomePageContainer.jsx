@@ -1,7 +1,7 @@
 import React from "react";
 
 import { Box, Grid, Typography } from "@mui/material";
-import { makeStyles } from "@mui/material/styles";
+import { styled } from "@mui/material/styles";
 
 import {
   Contributions,
@@ -16,29 +16,29 @@ import { DEFAULT, MODULE_NAME, DAYS_HF_STATUS } from "../constants";
 import { useFetchData } from "../hooks/useFetchData";
 import { getTimeDifferenceInDaysFromToday } from "@openimis/fe-core";
 
-const useStyles = makeStyles((theme) => ({
-  container: theme.page,
-  messageTitle: {
+const StyledHomePageContainer = styled('div')(({ theme }) => ({
+  '& .container': theme.page,
+  '& .messageTitle': {
     textAlign: "center",
     color: "red",
     fontSize: "16px"
   },
-  messageDate: {
+  '& .messageDate': {
     textAlign: "center",
     fontSize: "16px",
   },
-  healthFacilityLongTimeActive: {
+  '& .healthFacilityLongTimeActive': {
     textAlign: "center",
   },
-  healthFacilityMediumTimeActive: {
+  '& .healthFacilityMediumTimeActive': {
     textAlign: "center",
     color: "gray",
   },
-  healthFacilityShortTimeActive: {
+  '& .healthFacilityShortTimeActive': {
     textAlign: "center",
     color: "red",
   },
-  messageNotice: {
+  '& .messageNotice': {
     fontSize: "16px"
   }
 }));
@@ -67,7 +67,6 @@ const HomePageContainer = () => {
   );
 
   const { user } = useUserQuery();
-  const classes = useStyles();
   const {
     data: messageData,
     loading: messageLoading,
@@ -82,56 +81,58 @@ const HomePageContainer = () => {
   const timeDelta = getTimeDifferenceInDaysFromToday(dateToCheck);
   const getHealthFacilityStatus = (timeDelta) => {
     if (timeDelta > DAYS_HF_STATUS.DAYS_LONG_TIME_ACTIVE) {
-      return classes.healthFacilityLongTimeActive;
+      return 'healthFacilityLongTimeActive';
     } else if (timeDelta > DAYS_HF_STATUS.DAYS_MEDIUM_TIME_ACTIVE) {
-      return classes.healthFacilityMediumTimeActive;
+      return 'healthFacilityMediumTimeActive';
     } else {
-      return classes.healthFacilityShortTimeActive;
+      return 'healthFacilityShortTimeActive';
     }
   };
 
   return (
-    <Grid container className={classes.container} spacing={2}>
-      <Grid item xs={12}>
-        <Box mt={2}>
-          <Typography variant="h4">
-            {formatMessageWithValues("HomePageContainer.welcomeMessage", {
-              otherNames: user.otherNames,
-              lastName: user.lastName,
-            })}
-          </Typography>
-        </Box>
+    <StyledHomePageContainer>
+      <Grid container className="container" spacing={2}>
+        <Grid item xs={12}>
+          <Box mt={2}>
+            <Typography variant="h4">
+              {formatMessageWithValues("HomePageContainer.welcomeMessage", {
+                otherNames: user.otherNames,
+                lastName: user.lastName,
+              })}
+            </Typography>
+          </Box>
+        </Grid>
+        {showHealthFacilityMessage && (
+          <Grid item xs={12}>
+            <h2 className={getHealthFacilityStatus(timeDelta)}>
+              {userHealthFacility
+                ? formatMessageWithValues(
+                    "HomePageContainer.healthFacilityStatus",
+                    {
+                      date: `${formatDateFromISO(dateToCheck)}`,
+                      days: `${timeDelta}`,
+                    }
+                  )
+                : formatMessage("HomePageContainer.noHealthFacilityAssigned")}
+            </h2>
+          </Grid>
+        )}
+        {showHomeMessage && (
+          <Grid item xs={12}>
+            <ProgressOrError progress={messageLoading} error={messageError} />
+            <h3 className="messageTitle">
+              {formatMessage("HomePageContainer.messageTitle")}
+            </h3>
+            <p className="messageDate"> {messageData?.date} </p>
+            <div
+              className="messageNotice"
+              dangerouslySetInnerHTML={{ __html: messageData?.notice }}
+            />
+          </Grid>
+        )}
+        <Contributions contributionKey="home.HomePage.Blocks" user={user} />
       </Grid>
-      {showHealthFacilityMessage && (
-        <Grid item xs={12}>
-          <h2 className={getHealthFacilityStatus(timeDelta)}>
-            {userHealthFacility
-              ? formatMessageWithValues(
-                  "HomePageContainer.healthFacilityStatus",
-                  {
-                    date: `${formatDateFromISO(dateToCheck)}`,
-                    days: `${timeDelta}`,
-                  }
-                )
-              : formatMessage("HomePageContainer.noHealthFacilityAssigned")}
-          </h2>
-        </Grid>
-      )}
-      {showHomeMessage && (
-        <Grid item xs={12}>
-          <ProgressOrError progress={messageLoading} error={messageError} />
-          <h3 className={classes.messageTitle}>
-            {formatMessage("HomePageContainer.messageTitle")}
-          </h3>
-          <p className={classes.messageDate}> {messageData?.date} </p>
-          <div
-            className={classes.messageNotice}
-            dangerouslySetInnerHTML={{ __html: messageData?.notice }}
-          />
-        </Grid>
-      )}
-      <Contributions contributionKey="home.HomePage.Blocks" user={user} />
-    </Grid>
+    </StyledHomePageContainer>
   );
 };
 
