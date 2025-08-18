@@ -15,7 +15,7 @@ export default defineConfig({
       entry: 'src/index.js',
       name: '@openimis/fe-home',
       formats: ['es', 'cjs'],
-      fileName: (format) => format === 'es' ? 'index.es.js' : 'index.js',
+      fileName: (format) => `index.${format === 'es' ? 'es' : 'cjs'}.js`,
     },
     outDir: 'dist',
     sourcemap: true,
