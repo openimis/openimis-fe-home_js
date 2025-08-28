@@ -6,7 +6,9 @@ import envCompatible from 'vite-plugin-env-compatible';
 
 export default defineConfig({
   plugins: [
-    react(),
+    react({
+      jsxRuntime: 'automatic',
+    }),
     svgr(),
     envCompatible(),
   ],
