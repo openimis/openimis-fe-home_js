@@ -92,7 +92,7 @@ const HomePageContainer = () => {
   return (
     <StyledHomePageContainer>
       <Grid container className="container" spacing={2}>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <Box mt={2}>
             <Typography variant="h4">
               {formatMessageWithValues("HomePageContainer.welcomeMessage", {
@@ -103,7 +103,7 @@ const HomePageContainer = () => {
           </Box>
         </Grid>
         {showHealthFacilityMessage && (
-          <Grid item xs={12}>
+          <Grid size={12}>
             <h2 className={getHealthFacilityStatus(timeDelta)}>
               {userHealthFacility
                 ? formatMessageWithValues(
@@ -118,7 +118,7 @@ const HomePageContainer = () => {
           </Grid>
         )}
         {showHomeMessage && (
-          <Grid item xs={12}>
+          <Grid size={12}>
             <ProgressOrError progress={messageLoading} error={messageError} />
             <h3 className="messageTitle">
               {formatMessage("HomePageContainer.messageTitle")}
