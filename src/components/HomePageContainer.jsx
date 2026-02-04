@@ -17,7 +17,7 @@ import { useFetchData } from "../hooks/useFetchData";
 import { getTimeDifferenceInDaysFromToday } from "@openimis/fe-core";
 
 const StyledHomePageContainer = styled('div')(({ theme }) => ({
-  '& .container': theme.page,
+  '& .container': theme.page ?? {},
   '& .messageTitle': {
     textAlign: "center",
     color: "red",
