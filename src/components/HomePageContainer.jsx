@@ -1,0 +1,139 @@
+import React from "react";
+
+import { Box, Grid, Typography } from "@mui/material";
+import { styled } from "@mui/material/styles";
+
+import {
+  Contributions,
+  useUserQuery,
+  ProgressOrError,
+  useModulesManager,
+  useTranslations,
+} from "@openimis/fe-core";
+import { useSelector } from "react-redux";
+
+import { DEFAULT, MODULE_NAME, DAYS_HF_STATUS } from "../constants";
+import { useFetchData } from "../hooks/useFetchData";
+import { getTimeDifferenceInDaysFromToday } from "@openimis/fe-core";
+
+const StyledHomePageContainer = styled('div')(({ theme }) => ({
+  '& .container': theme.page ?? {},
+  '& .messageTitle': {
+    textAlign: "center",
+    color: "red",
+    fontSize: "16px"
+  },
+  '& .messageDate': {
+    textAlign: "center",
+    fontSize: "16px",
+  },
+  '& .healthFacilityLongTimeActive': {
+    textAlign: "center",
+  },
+  '& .healthFacilityMediumTimeActive': {
+    textAlign: "center",
+    color: "gray",
+  },
+  '& .healthFacilityShortTimeActive': {
+    textAlign: "center",
+    color: "red",
+  },
+  '& .messageNotice': {
+    fontSize: "16px"
+  }
+}));
+
+const HomePageContainer = () => {
+  const modulesManager = useModulesManager();
+  const userHealthFacility = useSelector(
+    (state) => state?.loc?.userHealthFacilityFullPath
+  );
+  const { formatMessage, formatMessageWithValues, formatDateFromISO } =
+    useTranslations(MODULE_NAME, modulesManager);
+  const showHomeMessage = modulesManager.getConf(
+    "fe-home",
+    "HomePageContainer.showHomeMessage",
+    DEFAULT.SHOW_HOME_MESSAGE
+  );
+  const homeMessageURL = modulesManager.getConf(
+    "fe-home",
+    "HomePageContainer.homeMessageURL",
+    DEFAULT.HOME_MESSAGE_URL
+  );
+  const showHealthFacilityMessage = modulesManager.getConf(
+    "fe-home",
+    "HomePageContainer.showHealthFacilityMessage",
+    DEFAULT.SHOW_HEALTH_FACILITY_MESSAGE
+  );
+
+  const { user } = useUserQuery();
+  const {
+    data: messageData,
+    loading: messageLoading,
+    error: messageError,
+  } = showHomeMessage ? useFetchData(homeMessageURL) : {};
+
+  if (!user) {
+    return null;
+  }
+
+  const dateToCheck = new Date(userHealthFacility?.contractEndDate ?? null);
+  const timeDelta = getTimeDifferenceInDaysFromToday(dateToCheck);
+  const getHealthFacilityStatus = (timeDelta) => {
+    if (timeDelta > DAYS_HF_STATUS.DAYS_LONG_TIME_ACTIVE) {
+      return 'healthFacilityLongTimeActive';
+    } else if (timeDelta > DAYS_HF_STATUS.DAYS_MEDIUM_TIME_ACTIVE) {
+      return 'healthFacilityMediumTimeActive';
+    } else {
+      return 'healthFacilityShortTimeActive';
+    }
+  };
+
+  return (
+    <StyledHomePageContainer>
+      <Grid container className="container" spacing={2}>
+        <Grid size={12}>
+          <Box mt={2}>
+            <Typography variant="h4">
+              {formatMessageWithValues("HomePageContainer.welcomeMessage", {
+                otherNames: user.otherNames,
+                lastName: user.lastName,
+              })}
+            </Typography>
+          </Box>
+        </Grid>
+        {showHealthFacilityMessage && (
+          <Grid size={12}>
+            <h2 className={getHealthFacilityStatus(timeDelta)}>
+              {userHealthFacility
+                ? formatMessageWithValues(
+                    "HomePageContainer.healthFacilityStatus",
+                    {
+                      date: `${formatDateFromISO(dateToCheck)}`,
+                      days: `${timeDelta}`,
+                    }
+                  )
+                : formatMessage("HomePageContainer.noHealthFacilityAssigned")}
+            </h2>
+          </Grid>
+        )}
+        {showHomeMessage && (
+          <Grid size={12}>
+            <ProgressOrError progress={messageLoading} error={messageError} />
+            <h3 className="messageTitle">
+              {formatMessage("HomePageContainer.messageTitle")}
+            </h3>
+            <p className="messageDate"> {messageData?.date} </p>
+            <div
+              className="messageNotice"
+              dangerouslySetInnerHTML={{ __html: messageData?.notice }}
+            />
+          </Grid>
+        )}
+        <Contributions contributionKey="home.HomePage.Blocks" user={user} />
+      </Grid>
+    </StyledHomePageContainer>
+  );
+};
+
+export default HomePageContainer;
