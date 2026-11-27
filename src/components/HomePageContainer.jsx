@@ -93,7 +93,9 @@ const HomePageContainer = () => {
     <StyledHomePageContainer>
       <Grid container className="container" spacing={2}>
         <Grid size={12}>
-          <Box mt={2}>
+          <Box sx={{
+            mt: 2
+          }}>
             <Typography variant="h4">
               {formatMessageWithValues("HomePageContainer.welcomeMessage", {
                 otherNames: user.otherNames,
